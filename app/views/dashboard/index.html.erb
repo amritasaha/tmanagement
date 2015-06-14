@@ -1,0 +1,69 @@
+<script src='http://bgrins.github.io/spectrum/spectrum.js'></script>
+<link rel='stylesheet' href='http://bgrins.github.io/spectrum/spectrum.css'/>
+
+<a class="btn" data-toggle="modal" href="#myModal">Launch Modal</a>
+
+<div class="modal" id="myModal" style="display: none;">
+  <div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+
+    <h3 id="modal_header">Modal header</h3>
+  </div>
+  <div class="modal-body">
+    <p>
+      <%= form_for Task.new, :url => "", :html => {:method => :post, :id => 'modal_update_task_form', :class => ''} do |f| %>
+          <%= text_area :task, :description, :style => "width: 510px;height: 120px;" %>
+          Priority : <br/>
+          <%= f.collection_select :priority_label_id, PriorityLabel.all, :id, :title, :include_blank => true %>
+          <input name="_method" type="hidden" value="put">
+      <% end %>
+    </p>
+  </div>
+  <div class="modal-footer">
+    <a href="javascript: void(0)" onclick="$('#myModal').modal('hide')" class="btn">Close</a>
+    <a href="javascript: void(0)" onclick="$('#modal_update_task_form').submit();" class="btn btn-primary">Save
+      changes</a>
+  </div>
+</div>
+
+<h1>Dashboard</h1>
+Select
+Board: <%= collection_select :dashboard, :selected_board_id, @boards, :id, :title, {:include_blank => true, :selected => params[:selected_board_id].to_i}, {:name => 'selected_board_id'} %>
+
+<div id="accordion"  style="width: 30%;float: right;padding-right: 10px;margin-top: -70px;">
+  <h3>Add priority label</h3>
+  <div style="width: 350px;position:absolute;" align="center">
+    <% PriorityLabel.all.each do |priority_label| %>
+        <div style="width: 350px;background-color: <%= priority_label.color %>;color: white">
+          <strong><%= priority_label.title %> </strong></div>
+    <% end %>
+    <div style="width: 350px;">
+      <%= form_for PriorityLabel.new, :url => priority_labels_url, :method => :post do |f| %>
+          <input type='color' name='priority_label[color]'/>
+          <%= f.text_field :title %>
+          <%= f.submit %>
+      <% end %>
+
+    </div>
+  </div>
+</div>
+
+<ul id="sortable_list">
+  <% @board.lists.order('position ASC').each do |list| %>
+      <li class="list dropable sortable" list_id="<%= list.id %>">
+        <strong class="handle"><%= best_in_place list, :title %> </strong>
+        <% list.tasks.order("position ASC").each do |task| %>
+            <div class="task dragable" task_id="<%= task.id %>" description="<%= task.description %>">
+              <%= best_in_place task, :title %>
+              <div style=" width:80px;float:right;background-color:<%= task.priority_label.color if task.priority_label %>">
+                <%= task.priority_label.title if task.priority_label %>
+              </div>
+            </div>
+        <% end %>
+        <%= form_for Task.new, :url => tasks_url, :method => :post do |f| %>
+            <%= f.text_field :title %>
+            <%= f.hidden_field :list_id, :value => list.id %>
+        <% end %>
+      </li>
+  <% end %>
+</ul>

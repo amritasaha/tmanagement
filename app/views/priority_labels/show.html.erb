@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Color:</b>
+  <%= @priority_label.color %>
+</p>
+
+<p>
+  <b>Title:</b>
+  <%= @priority_label.title %>
+</p>
+
+
+<%= link_to 'Edit', edit_priority_label_path(@priority_label) %> |
+<%= link_to 'Back', priority_labels_path %>

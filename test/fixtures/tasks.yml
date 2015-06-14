@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  title: MyString
+  description: MyText
+  position: 1
+  priority_label_id: 1
+  list_id: 1
+
+two:
+  title: MyString
+  description: MyText
+  position: 1
+  priority_label_id: 1
+  list_id: 1
